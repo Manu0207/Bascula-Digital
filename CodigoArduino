@@ -1,0 +1,49 @@
+#include <LiquidCrystal.h>
+float VIN = 0.0;
+float V2 = 0.0;
+double F = 0.0;
+double F2 = 0.0;
+double R = 0.0;
+double w = 0.0;
+double w2 = 0.0;
+LiquidCrystal lcd(12, 11, 5, 4, 3, 2);
+
+void setup()
+{
+    pinMode(A0, INPUT);
+    lcd.begin(16, 2);
+    Serial.begin(9600);
+}
+
+void loop()
+{
+    VIN = (analogRead(A0));
+    V2 = (VIN * 5) / 1023;
+    R = 10 * ((5 / V2) - 1);
+    F = pow(R / 6.1111, 1 / -0.709);
+    F2 = pow(R / 4.2843, 1 / -1.191);
+    w = ((F / 9.81) * (1000));
+    w2 = ((F2 / 9.81) * (1000));
+    lcd.clear();
+    lcd.setCursor(1, 0);
+    lcd.print("F:");
+    if (F < 0.5)
+    {
+        lcd.print(F2, 3);
+        lcd.print(" N");
+        lcd.setCursor(3, 1);
+        lcd.print("Peso:");
+        lcd.print(w2, 1);
+        lcd.print(" g");
+    }
+    else {
+        lcd.print(F, 3);
+        lcd.print(" N");
+        lcd.setCursor(3, 1);
+        lcd.print("Peso:");
+        lcd.print(w, 1);
+        lcd.print(" g");
+    }
+    delay(500);
+    lcd.clear();
+}
